@@ -23,7 +23,7 @@ import chainer.links as L
 import numpy
 
 
-image_dir = './images'
+image_dir = '/home/ljw/data/farm/color_96_96'
 out_image_dir = './out_images'
 out_model_dir = './out_models'
 
@@ -179,6 +179,9 @@ def train_dcgan_labeled(gen, dis, epoch0=0):
                     rnd2 = np.random.randint(2)
 
                     img = np.asarray(Image.open(StringIO(dataset[rnd])).convert('RGB')).astype(np.float32).transpose(2, 0, 1)
+                    # img = Image.open(StringIO(dataset[rnd])).convert('RGB')
+                    # img = img.resize((96,96), Image.ANTIALIAS)
+                    # img = np.asarray(img).astype(np.float32).transpose(2, 0, 1)
                     if rnd2==0:
                         x2[j,:,:,:] = (img[:,:,::-1]-128.0)/128.0
                     else:
@@ -188,6 +191,7 @@ def train_dcgan_labeled(gen, dis, epoch0=0):
             #print "load image done"
             
             # train generator
+            # z is the input noise
             z = Variable(xp.random.uniform(-1, 1, (batchsize, nz), dtype=np.float32))
             x = gen(z)
             yl = dis(x)
